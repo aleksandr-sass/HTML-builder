@@ -3,12 +3,9 @@ const path = require('path');
 
 const { stdin, stdout, exit } = process;
 stdin.on('data', (data) => {
-  console.log(data.toString().length);
-  console.log("'"+data.toString()+"'");
-  console.log(data.toString() == 'exit');
-  console.log('data.toString()[0]', data.toString()[0]);
-  console.log('data.toString()[1]', data.toString()[1]);
-  console.log('data.toString()[2]', data.toString()[2]);
+  if ((data.toString().indexOf('exit') != -1)&&(data.toString().length == 6)) {
+    exit();
+  }
   fs.appendFile(
     path.join(__dirname, 'text.txt'),
     data,
@@ -18,9 +15,12 @@ stdin.on('data', (data) => {
       }
     }
   );
+  stdout.write('Добавлено в text.txt. Напишите ещё что-нибудь (Added to text.txt. Please, continue typing):\n');
 });
 stdout.write('Напишите что-нибудь (Type something here):\n');
-process.on('SIGINT', () => {
-  stdout.write("Завершение программы (Close app)");
+process.on('SIGINT', () => {  
   exit();
 });
+process.on('exit', () => {
+  stdout.write("Завершение программы (Close app)");
+})
